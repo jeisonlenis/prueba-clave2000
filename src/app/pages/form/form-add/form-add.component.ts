@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import * as moment from 'moment';
+import Swal from 'sweetalert2';
 
 import { FormService } from 'src/app/services/form.service';
 import { DepartamentosService } from 'src/app/services/departamentos.service';
@@ -80,13 +81,10 @@ export class FormAddComponent implements OnInit {
 
     this.serviceDepartamento.findAll().subscribe((data: any) => {
       this.optionsdepartamento.push(...data);
-      console.log(this.optionsdepartamento);
     });
   }
 
   ciudadSelect(departamento: string): void {
-    console.log(departamento);
-
     this.serviceCiudad
       .findByDepartamento(departamento)
       .subscribe((data: any) => {
@@ -110,24 +108,33 @@ export class FormAddComponent implements OnInit {
     this.form.horacreacion = horaEnvio;
 
     if (this.form) {
+      let cliente: any;
+      this.serviceForm.sendEmail(this.form).subscribe((data) => {
+        cliente = data;
+      });
       this.serviceForm.create(this.form).subscribe((data) => {
-        console.log(data);
-
-        /* if (data.message === 'Save Success') {
+        if (data.message === 'Solicitud repetida') {
           setTimeout(() => {
-            this.router.navigate(['/form/form-add/'], {
-              queryParams: { id: data._id, title: 'Form' },
+            Swal.fire({
+              icon: 'error',
+              title: 'Oops...',
+              text: 'Usted ya creó una solicitud el día de hoy!',
+              footer: '<a href="">Por favor vuelva a intentarlo mañana!</a>',
             });
           }, 2000);
-        } else if (data.message === 'Same day') {
-        } else {
-        } */
+        } else if (data.message === 'Solicitud realizada') {
+          Swal.fire(
+            'Buen trabajo!',
+            'Formulario realizado correctamente!',
+            'success'
+          );
+        }
       });
-
-      this.serviceForm.sendEmail(this.form).subscribe((data) => {
-        console.log(data);
-      });
-    } else {
+      /* const submitOk = () => {
+        this.serviceForm.sendEmail(this.form).subscribe((data) => {
+          console.log(data);
+        });
+      }; */
     }
   }
 }

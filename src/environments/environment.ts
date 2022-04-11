@@ -8,8 +8,7 @@ export const environment = {
 };
 
 export const emailprops = {
-  send_email: 'https://formspree.io/f/moqrkago',
-  send_to: 'oxhuro@gmail.com',
+  url: 'http://localhost:8000/usuario',
 };
 
 /*

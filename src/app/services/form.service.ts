@@ -18,34 +18,9 @@ export class FormService {
     );
   }
 
-  sendEmail(usuario: Form): Observable<Form> {
-    const {
-      modelo,
-      nombre_completo,
-      numero_celular,
-      email,
-      departamento,
-      ciudad,
-      fechacreacion,
-      horacreacion,
-    } = usuario;
+  sendEmail(cliente) {
+    console.log(JSON.stringify(cliente));
 
-    const mensaje = `
-    Modelo: ${modelo} 
-    Nombre: ${nombre_completo} 
-    Numero celular: ${numero_celular} 
-    Email: ${email} 
-    Deparamento: ${departamento}
-    Ciudad: ${ciudad}
-    Fecha de solicitud: ${fechacreacion}
-    Hora de envio:  ${horacreacion}
-    `;
-
-    const headers = new HttpHeaders({ 'Content-Type': 'application/json' });
-    return this.http.post<Form>(
-      `${environment.url}backendclave2000/smtp/sendemail.php`,
-      JSON.stringify(usuario),
-      { headers: headers }
-    );
+    return this.http.post(`${emailprops.url}`, cliente);
   }
 }
